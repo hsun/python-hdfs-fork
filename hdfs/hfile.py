@@ -94,6 +94,9 @@ class Hfile(object):
     ret = libhdfs.hdfsRead(self.fs, self.fh, buf_p, st.mSize)
     if ret == -1:
       raise HdfsError('read failure')
+    elif ret != st.mSize:
+      raise HdfsError('failed to read in the whole file, please try to use pread() instead')
+  
     return ctypes.string_at(buf, ret)
 
   def readline(self, length=100):
