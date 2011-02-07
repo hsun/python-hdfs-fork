@@ -1,4 +1,5 @@
 from hdfs._common import *
+import ctypes
 
 class Hfile(object):
 
@@ -82,7 +83,7 @@ class Hfile(object):
     ret = libhdfs.hdfsPread(self.fs, self.fh, position, buf_p, length)
     if ret == -1:
       raise HdfsError('read failure')
-    return buf.value
+    return ctypes.string_at(buf, ret)
 
   def read(self):
     st = self.stat()
@@ -93,7 +94,7 @@ class Hfile(object):
     ret = libhdfs.hdfsRead(self.fs, self.fh, buf_p, st.mSize)
     if ret == -1:
       raise HdfsError('read failure')
-    return buf.value[0:ret]
+    return ctypes.string_at(buf, ret)
 
   def readline(self, length=100):
     line = ''
